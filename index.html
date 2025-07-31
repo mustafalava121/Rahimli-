@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1E3A8A">
+    <title>Rahimli - متجرك الإلكتروني</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <!-- شاشة التحميل المحسنة -->
+    <div class="splash-screen" id="splash-screen">
+        <div class="logo-animation">
+            <div class="logo-spinner"></div>
+            <img src="assets/logo.png" alt="Rahimli" class="logo-img animate__animated animate__pulse">
+        </div>
+        <div class="loading-progress">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="loading-text animate__animated animate__fadeIn">جاري التحميل...</div>
+        </div>
+        <div class="loading-message animate__animated animate__fadeIn">نحن نجهز كل شيء لك!</div>
+    </div>
+
+    <!-- الهيكل الرئيسي للتطبيق -->
+    <div class="app-container" id="app-container" style="display: none;">
+        <header class="app-header">
+            <button class="back-button" id="back-button" style="display: none;">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="header-content">
+                <h1 class="app-title" id="app-title">Rahimli</h1>
+                <div class="header-actions">
+                    <button class="search-button" id="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="menu-button" id="menu-button">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="search-bar" id="search-bar" style="display: none;">
+                <input type="text" placeholder="ابحث عن منتجات أو متاجر..." id="search-input">
+                <button class="close-search" id="close-search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="app-content" id="app-content">
+            <!-- المحتوى يتم تحميله هنا -->
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-page="home">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span>الرئيسية</span>
+            </a>
+            <a href="#" class="nav-item" data-page="stores">
+                <div class="nav-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <span>المتاجر</span>
+            </a>
+            <a href="#" class="nav-item" data-page="cart">
+                <div class="nav-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" style="display: none;">0</span>
+                </div>
+                <span>السلة</span>
+            </a>
+            <a href="#" class="nav-item" data-page="account">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span>حسابي</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- القائمة الجانبية المحسنة -->
+    <div class="side-menu" id="side-menu">
+        <div class="menu-header">
+            <div class="user-profile">
+                <img src="assets/user-avatar.jpg" alt="صورة المستخدم" class="user-avatar">
+                <div class="user-info">
+                    <h3>مرحباً بك!</h3>
+                    <p>سجل الدخول للوصول إلى جميع الميزات</p>
+                </div>
+            </div>
+            <button class="close-menu" id="close-menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="menu-items">
+            <li><a href="#"><i class="fas fa-heart"></i> المفضلة</a></li>
+            <li><a href="#"><i class="fas fa-history"></i> سجل الطلبات</a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> الإشعارات</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> الإعدادات</a></li>
+            <li><a href="#"><i class="fas fa-question-circle"></i> المساعدة</a></li>
+            <li><a href="#" id="login-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a></li>
+        </ul>
+        <div class="menu-footer">
+            <p>الإصدار 1.0.0</p>
+            <button class="btn-secondary" id="logout-btn" style="display: none;">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول المحسنة -->
+    <div class="modal" id="login-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-login">&times;</span>
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">تسجيل الدخول</button>
+                <button class="tab-btn" data-tab="register">إنشاء حساب</button>
+            </div>
+            
+            <form id="login-form" class="auth-form active">
+                <div class="social-login">
+                    <button type="button" class="social-btn google">
+                        <i class="fab fa-google"></i> جوجل
+                    </button>
+                    <button type="button" class="social-btn facebook">
+                        <i class="fab fa-facebook-f"></i> فيسبوك
+                    </button>
+                </div>
+                
+                <div class="divider">
+                    <span>أو</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="login-phone">رقم الهاتف أو البريد الإلكتروني</label>
+                    <input type="text" id="login-phone" placeholder="أدخل رقم الهاتف أو البريد الإلكتروني" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">كلمة المرور</label>
+                    <div class="password-field">
+                        <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required>
+                        <button type="button" class="toggle-password">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <span>تسجيل الدخول</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </form>
+            
+            <form id="register-form" class="auth-form">
+                <div class="input-group">
+                    <label for="register-name">الاسم الكامل</label>
+                    <input type="text" id="register-name" placeholder="أدخل اسمك الكامل" required>
+                </div>
+                <div class="input-group">
+                    <label for="register-phone">رقم الهاتف</label>
+                    <input type="tel" id="register-phone" placeholder="07XXXXXXXX" required>
+                </div>
+                <div class="input-group">
+                    <label for="register-email">البريد الإلكتروني (اختياري)</label>
+                    <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                <div class="input-group">
+                    <label for="register-password">كلمة المرور</label>
+                    <div class="password-field">
+                        <input type="password" id="register-password" placeholder="أنشئ كلمة مرور قوية" required>
+                        <button type="button" class="toggle-password">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <span class="strength-bar"></span>
+                        <span class="strength-text">قوة كلمة المرور</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="register-type">نوع الحساب</label>
+                    <select id="register-type" required>
+                        <option value="customer">عميل</option>
+                        <option value="seller">تاجر</option>
+                    </select>
+                </div>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="agree-terms" required>
+                    <label for="agree-terms">أوافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الخصوصية</a></label>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <span>إنشاء حساب</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- إشعارات التطبيق المحسنة -->
+    <div class="toast" id="toast" style="display: none;"></div>
+
+    <!-- العناصر المتحركة المحسنة -->
+    <div class="floating-action-btn animate__animated animate__bounceIn" id="fab" style="display: none;">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <div class="ripple-effect"></div>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
