@@ -11,6 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script>
+        // اكتشاف خط San Francisco على أجهزة iOS
+        if (navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)) {
+            document.documentElement.style.setProperty('--font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif');
+        }
+    </script>
 </head>
 <body>
     <!-- شاشة التحميل المحسنة -->
@@ -99,14 +105,21 @@
             </button>
         </div>
         <ul class="menu-items">
-            <li><a href="#"><i class="fas fa-heart"></i> المفضلة</a></li>
-            <li><a href="#"><i class="fas fa-history"></i> سجل الطلبات</a></li>
-            <li><a href="#"><i class="fas fa-bell"></i> الإشعارات</a></li>
-            <li><a href="#"><i class="fas fa-cog"></i> الإعدادات</a></li>
-            <li><a href="#"><i class="fas fa-question-circle"></i> المساعدة</a></li>
+            <li><a href="#" data-page="favorites"><i class="fas fa-heart"></i> المفضلة</a></li>
+            <li><a href="#" data-page="orders"><i class="fas fa-history"></i> سجل الطلبات</a></li>
+            <li><a href="#" data-page="notifications"><i class="fas fa-bell"></i> الإشعارات</a></li>
+            <li><a href="#" data-page="settings"><i class="fas fa-cog"></i> الإعدادات</a></li>
+            <li><a href="#" data-page="help"><i class="fas fa-question-circle"></i> المساعدة</a></li>
             <li><a href="#" id="login-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a></li>
         </ul>
         <div class="menu-footer">
+            <div class="theme-switch">
+                <span>الوضع الداكن</span>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
             <p>الإصدار 1.0.0</p>
             <button class="btn-secondary" id="logout-btn" style="display: none;">
                 <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
@@ -194,13 +207,357 @@
                 </div>
                 <div class="form-checkbox">
                     <input type="checkbox" id="agree-terms" required>
-                    <label for="agree-terms">أوافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الخصوصية</a></label>
+                    <label for="agree-terms">أوافق على <a href="#" data-page="terms">الشروط والأحكام</a> و<a href="#" data-page="privacy">سياسة الخصوصية</a></label>
                 </div>
                 <button type="submit" class="btn-primary">
                     <span>إنشاء حساب</span>
                     <i class="fas fa-arrow-left"></i>
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- نافذة سياسة الخصوصية -->
+    <div class="modal" id="privacy-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-privacy">&times;</span>
+            <div class="modal-header">
+                <h2>سياسة الخصوصية</h2>
+            </div>
+            <div class="modal-body">
+                <div class="terms-content">
+                    <h3>1. المعلومات التي نجمعها</h3>
+                    <p>نقوم بجمع المعلومات التالية عندما تستخدم منصتنا:</p>
+                    <ul>
+                        <li>معلومات الحساب: الاسم، البريد الإلكتروني، رقم الهاتف، كلمة المرور</li>
+                        <li>معلومات الدفع: تفاصيل بطاقة الائتمان أو الحساب البنكي</li>
+                        <li>معلومات الطلب: المنتجات المشتراة، العنوان، تفاصيل الشحن</li>
+                        <li>معلومات الجهاز: نوع الجهاز، نظام التشغيل، عنوان IP</li>
+                    </ul>
+
+                    <h3>2. كيفية استخدام المعلومات</h3>
+                    <p>نستخدم المعلومات التي نجمعها للأغراض التالية:</p>
+                    <ul>
+                        <li>توفير الخدمات المطلوبة وتنفيذ الطلبات</li>
+                        <li>تحسين تجربة المستخدم وتطوير المنتجات</li>
+                        <li>إرسال التحديثات والعروض الترويجية</li>
+                        <li>تحليل استخدام الموقع وتحسين أدائه</li>
+                    </ul>
+
+                    <h3>3. مشاركة المعلومات</h3>
+                    <p>لا نبيع أو نؤجر معلوماتك الشخصية لأطراف ثالثة، إلا في الحالات التالية:</p>
+                    <ul>
+                        <li>مع مزودي الخدمة الذين يساعدوننا في تشغيل المنصة</li>
+                        <li>عندما يكون ذلك مطلوبًا بموجب القانون</li>
+                        <li>في حالة اندماج أو استحواذ على الشركة</li>
+                    </ul>
+
+                    <h3>4. حماية المعلومات</h3>
+                    <p>نستخدم إجراءات أمنية متقدمة لحماية معلوماتك، بما في ذلك:</p>
+                    <ul>
+                        <li>تشفير البيانات أثناء النقل والتخزين</li>
+                        <li>مراجعات أمنية منتظمة</li>
+                        <li>تقييد الوصول إلى المعلومات الحساسة</li>
+                    </ul>
+
+                    <h3>5. حقوقك</h3>
+                    <p>لديك الحق في:</p>
+                    <ul>
+                        <li>الوصول إلى معلوماتك الشخصية وتحديثها</li>
+                        <li>طلب حذف حسابك وبياناتك</li>
+                        <li>رفض تلقي اتصالات تسويقية</li>
+                        <li>سحب الموافقة على معالجة بياناتك</li>
+                    </ul>
+
+                    <h3>6. التغييرات على السياسة</h3>
+                    <p>قد نقوم بتحديث هذه السياسة من وقت لآخر. وسنخطرك بأي تغييرات جوهرية.</p>
+
+                    <h3>7. الاتصال بنا</h3>
+                    <p>إذا كانت لديك أي أسئلة حول سياسة الخصوصية، يمكنك الاتصال بنا عبر:</p>
+                    <p>البريد الإلكتروني: privacy@rahimli.com</p>
+                    <p>الهاتف: +9647001234567</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="agree-privacy">
+                    <span>أوافق</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الشروط والأحكام -->
+    <div class="modal" id="terms-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-terms">&times;</span>
+            <div class="modal-header">
+                <h2>الشروط والأحكام</h2>
+            </div>
+            <div class="modal-body">
+                <div class="terms-content">
+                    <h3>1. مقدمة</h3>
+                    <p>مرحبًا بك في منصة Rahimli. من خلال استخدامك لهذه المنصة، فإنك توافق على الالتزام بهذه الشروط والأحكام.</p>
+
+                    <h3>2. إنشاء الحساب</h3>
+                    <ul>
+                        <li>يجب أن تكون 18 عامًا على الأقل لإنشاء حساب</li>
+                        <li>أنت مسؤول عن الحفاظ على سرية معلومات تسجيل الدخول</li>
+                        <li>يجب تقديم معلومات دقيقة وكاملة</li>
+                    </ul>
+
+                    <h3>3. الطلبات والدفع</h3>
+                    <ul>
+                        <li>الأسعار المعروضة تشمل الضرائب إن وجدت</li>
+                        <li>نحن نحتفظ بالحق في رفض أو إلغاء أي طلب</li>
+                        <li>يجب تسديد المبلغ كاملاً قبل الشحن</li>
+                    </ul>
+
+                    <h3>4. الشحن والتسليم</h3>
+                    <ul>
+                        <li>أوقات التسليم تقديرية وليست مضمونة</li>
+                        <li>أنت مسؤول عن توفير عنوان تسليم دقيق</li>
+                        <li>قد تفرض رسوم شحن إضافية لبعض المناطق</li>
+                    </ul>
+
+                    <h3>5. الإرجاع والاسترداد</h3>
+                    <ul>
+                        <li>يجب إرجاع المنتجات في حالتها الأصلية</li>
+                        <li>يجب تقديم طلب الإرجاع خلال 7 أيام من الاستلام</li>
+                        <li>لا يتم استرداد رسوم الشحن الأصلية</li>
+                    </ul>
+
+                    <h3>6. الملكية الفكرية</h3>
+                    <p>جميع المحتويات على المنصة محمية بحقوق الملكية الفكرية ولا يجوز نسخها أو توزيعها دون إذن.</p>
+
+                    <h3>7. المسؤولية</h3>
+                    <p>لا نتحمل مسؤولية أي أضرار غير مباشرة ناتجة عن استخدام المنصة.</p>
+
+                    <h3>8. التعديلات</h3>
+                    <p>نحتفظ بالحق في تعديل هذه الشروط في أي وقت. وسيتم إعلامك بأي تغييرات جوهرية.</p>
+
+                    <h3>9. القانون الواجب التطبيق</h3>
+                    <p>تخضع هذه الشروط والأحكام لقوانين جمهورية العراق.</p>
+
+                    <h3>10. الاتصال بنا</h3>
+                    <p>لأية استفسارات حول الشروط والأحكام، يمكنك الاتصال بنا عبر:</p>
+                    <p>البريد الإلكتروني: legal@rahimli.com</p>
+                    <p>الهاتف: +9647001234567</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="agree-terms-btn">
+                    <span>أوافق</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الإعدادات -->
+    <div class="modal" id="settings-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-settings">&times;</span>
+            <div class="modal-header">
+                <h2>الإعدادات</h2>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3><i class="fas fa-user-cog"></i> إعدادات الحساب</h3>
+                    <div class="setting-item">
+                        <label>تغيير الصورة الشخصية</label>
+                        <button class="btn-outline">تغيير</button>
+                    </div>
+                    <div class="setting-item">
+                        <label>تغيير كلمة المرور</label>
+                        <button class="btn-outline">تغيير</button>
+                    </div>
+                    <div class="setting-item">
+                        <label>تحديث المعلومات الشخصية</label>
+                        <button class="btn-outline">تحديث</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-bell"></i> إعدادات الإشعارات</h3>
+                    <div class="setting-item">
+                        <label>إشعارات الطلبات</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>عروض خاصة</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>تحديثات المتجر</label>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-globe"></i> اللغة والمنطقة</h3>
+                    <div class="setting-item">
+                        <label>اللغة</label>
+                        <select>
+                            <option value="ar" selected>العربية</option>
+                            <option value="en">English</option>
+                            <option value="ku">Kurdî</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>العملة</label>
+                        <select>
+                            <option value="IQD" selected>دينار عراقي (IQD)</option>
+                            <option value="USD">دولار أمريكي (USD)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3><i class="fas fa-shield-alt"></i> الخصوصية والأمان</h3>
+                    <div class="setting-item">
+                        <label>حساب خاص</label>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>مصادقة ثنائية</label>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>نشاط تسجيل الدخول</label>
+                        <button class="btn-outline">عرض</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="save-settings">
+                    <span>حفظ التغييرات</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة المساعدة -->
+    <div class="modal" id="help-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-help">&times;</span>
+            <div class="modal-header">
+                <h2>مركز المساعدة</h2>
+            </div>
+            <div class="modal-body">
+                <div class="help-categories">
+                    <div class="help-category active" data-category="general">
+                        <i class="fas fa-question-circle"></i>
+                        <span>أسئلة عامة</span>
+                    </div>
+                    <div class="help-category" data-category="account">
+                        <i class="fas fa-user"></i>
+                        <span>الحساب</span>
+                    </div>
+                    <div class="help-category" data-category="orders">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>الطلبات</span>
+                    </div>
+                    <div class="help-category" data-category="payments">
+                        <i class="fas fa-credit-card"></i>
+                        <span>الدفع</span>
+                    </div>
+                    <div class="help-category" data-category="delivery">
+                        <i class="fas fa-truck"></i>
+                        <span>التوصيل</span>
+                    </div>
+                </div>
+
+                <div class="help-content">
+                    <div class="help-questions" id="general-questions">
+                        <h3>أسئلة عامة</h3>
+                        <div class="help-question">
+                            <div class="question">كيف يمكنني التواصل مع خدمة العملاء؟</div>
+                            <div class="answer">
+                                يمكنك التواصل مع خدمة العملاء عبر:
+                                <ul>
+                                    <li>البريد الإلكتروني: support@rahimli.com</li>
+                                    <li>الهاتف: +9647001234567</li>
+                                    <li>الدردشة الحية في التطبيق</li>
+                                </ul>
+                                ساعات العمل: من السبت إلى الخميس، من 9 صباحًا حتى 5 مساءً.
+                            </div>
+                        </div>
+                        <div class="help-question">
+                            <div class="question">ما هي ساعات عمل المتاجر؟</div>
+                            <div class="answer">
+                                تختلف ساعات العمل حسب المتجر. يمكنك الاطلاع على ساعات العمل لكل متجر في صفحة المتجر. معظم المتاجر تعمل من الساعة 9 صباحًا حتى 10 مساءً.
+                            </div>
+                        </div>
+                        <div class="help-question">
+                            <div class="question">كيف يمكنني الإبلاغ عن مشكلة؟</div>
+                            <div class="answer">
+                                يمكنك الإبلاغ عن أي مشكلة عبر:
+                                <ol>
+                                    <li>الذهاب إلى صفحة "المساعدة" في التطبيق</li>
+                                    <li>اختيار "الإبلاغ عن مشكلة"</li>
+                                    <li>تعبئة النموذج وإرساله</li>
+                                </ol>
+                                سنقوم بالرد عليك خلال 24 ساعة عمل.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-questions" id="account-questions" style="display: none;">
+                        <h3>أسئلة الحساب</h3>
+                        <div class="help-question">
+                            <div class="question">كيف يمكنني إنشاء حساب؟</div>
+                            <div class="answer">
+                                لإنشاء حساب جديد:
+                                <ol>
+                                    <li>اضغط على أيقونة "حسابي" في القائمة السفلية</li>
+                                    <li>اختر "إنشاء حساب جديد"</li>
+                                    <li>املأ المعلومات المطلوبة</li>
+                                    <li>اضغط على "إنشاء حساب"</li>
+                                </ol>
+                                ستتلقى رسالة تأكيد على بريدك الإلكتروني أو هاتفك.
+                            </div>
+                        </div>
+                        <div class="help-question">
+                            <div class="question">نسيت كلمة المرور، كيف استعيدها؟</div>
+                            <div class="answer">
+                                لاستعادة كلمة المرور:
+                                <ol>
+                                    <li>اضغط على "نسيت كلمة المرور" في صفحة تسجيل الدخول</li>
+                                    <li>أدخل بريدك الإلكتروني أو رقم هاتفك</li>
+                                    <li>اتبع التعليمات في الرسالة التي ستصل إليك</li>
+                                </ol>
+                                إذا لم تستلم الرسالة، تحقق من مجلد الرسائل غير المرغوب فيها.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-support">
+                        <h3>لم تجد إجابتك؟</h3>
+                        <p>يمكنك التواصل مباشرة مع فريق الدعم</p>
+                        <button class="btn-primary">
+                            <i class="fas fa-headset"></i>
+                            <span>الدردشة مع الدعم</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
