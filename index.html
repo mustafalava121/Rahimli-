@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
         // اكتشاف خط San Francisco على أجهزة iOS
         if (navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)) {
@@ -138,10 +139,10 @@
             
             <form id="login-form" class="auth-form active">
                 <div class="social-login">
-                    <button type="button" class="social-btn google">
+                    <button type="button" class="social-btn google" id="google-login">
                         <i class="fab fa-google"></i> جوجل
                     </button>
-                    <button type="button" class="social-btn facebook">
+                    <button type="button" class="social-btn facebook" id="facebook-login">
                         <i class="fab fa-facebook-f"></i> فيسبوك
                     </button>
                 </div>
@@ -151,8 +152,8 @@
                 </div>
                 
                 <div class="input-group">
-                    <label for="login-phone">رقم الهاتف أو البريد الإلكتروني</label>
-                    <input type="text" id="login-phone" placeholder="أدخل رقم الهاتف أو البريد الإلكتروني" required>
+                    <label for="login-email">البريد الإلكتروني</label>
+                    <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني" required>
                 </div>
                 <div class="input-group">
                     <label for="login-password">كلمة المرور</label>
@@ -178,12 +179,12 @@
                     <input type="text" id="register-name" placeholder="أدخل اسمك الكامل" required>
                 </div>
                 <div class="input-group">
-                    <label for="register-phone">رقم الهاتف</label>
-                    <input type="tel" id="register-phone" placeholder="07XXXXXXXX" required>
+                    <label for="register-email">البريد الإلكتروني</label>
+                    <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني" required>
                 </div>
                 <div class="input-group">
-                    <label for="register-email">البريد الإلكتروني (اختياري)</label>
-                    <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني">
+                    <label for="register-phone">رقم الهاتف</label>
+                    <input type="tel" id="register-phone" placeholder="07XXXXXXXX" required>
                 </div>
                 <div class="input-group">
                     <label for="register-password">كلمة المرور</label>
@@ -217,6 +218,187 @@
         </div>
     </div>
 
+    <!-- نافذة إنشاء متجر للتجار -->
+    <div class="modal" id="create-store-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-create-store">&times;</span>
+            <div class="modal-header">
+                <h2>إنشاء متجر جديد</h2>
+            </div>
+            <div class="modal-body">
+                <form id="create-store-form">
+                    <div class="input-group">
+                        <label for="store-name">اسم المتجر</label>
+                        <input type="text" id="store-name" placeholder="أدخل اسم المتجر" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="store-description">وصف المتجر</label>
+                        <textarea id="store-description" placeholder="أدخل وصفاً مختصراً عن متجرك" rows="3" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="store-category">تصنيف المتجر</label>
+                        <select id="store-category" required>
+                            <option value="electronics">إلكترونيات</option>
+                            <option value="clothing">ملابس</option>
+                            <option value="home">أثاث منزل</option>
+                            <option value="beauty">الجمال</option>
+                            <option value="food">طعام</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="store-logo">شعار المتجر</label>
+                        <div class="file-upload">
+                            <input type="file" id="store-logo" accept="image/*" required>
+                            <label for="store-logo" class="btn-outline">
+                                <i class="fas fa-upload"></i>
+                                اختر صورة
+                            </label>
+                            <span id="file-name">لم يتم اختيار صورة</span>
+                        </div>
+                        <div class="image-preview" id="store-logo-preview" style="display: none;">
+                            <img src="" alt="معاينة شعار المتجر">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="store-address">عنوان المتجر</label>
+                        <input type="text" id="store-address" placeholder="أدخل عنوان المتجر الفعلي" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="store-phone">هاتف المتجر</label>
+                        <input type="tel" id="store-phone" placeholder="أدخل رقم هاتف المتجر" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="submit-store">
+                    <span>إنشاء المتجر</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة منتج جديد -->
+    <div class="modal" id="add-product-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-add-product">&times;</span>
+            <div class="modal-header">
+                <h2>إضافة منتج جديد</h2>
+            </div>
+            <div class="modal-body">
+                <form id="add-product-form">
+                    <div class="input-group">
+                        <label for="product-name">اسم المنتج</label>
+                        <input type="text" id="product-name" placeholder="أدخل اسم المنتج" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-description">وصف المنتج</label>
+                        <textarea id="product-description" placeholder="أدخل وصفاً مفصلاً للمنتج" rows="3" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-price">سعر المنتج (IQD)</label>
+                        <input type="number" id="product-price" placeholder="أدخل سعر المنتج" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-category">تصنيف المنتج</label>
+                        <select id="product-category" required>
+                            <option value="electronics">إلكترونيات</option>
+                            <option value="clothing">ملابس</option>
+                            <option value="home">أثاث منزل</option>
+                            <option value="beauty">الجمال</option>
+                            <option value="food">طعام</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-stock">الكمية المتاحة</label>
+                        <input type="number" id="product-stock" placeholder="أدخل الكمية المتاحة" min="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-images">صور المنتج</label>
+                        <div class="file-upload">
+                            <input type="file" id="product-images" accept="image/*" multiple required>
+                            <label for="product-images" class="btn-outline">
+                                <i class="fas fa-upload"></i>
+                                اختر صوراً
+                            </label>
+                            <span id="product-images-name">لم يتم اختيار صور</span>
+                        </div>
+                        <div class="images-preview" id="product-images-preview"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="submit-product">
+                    <span>إضافة المنتج</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدفع -->
+    <div class="modal" id="payment-modal" style="display: none;">
+        <div class="modal-content animate__animated animate__fadeInUp">
+            <span class="close-modal" id="close-payment">&times;</span>
+            <div class="modal-header">
+                <h2>إتمام عملية الدفع</h2>
+            </div>
+            <div class="modal-body">
+                <div class="payment-methods">
+                    <div class="payment-method active" data-method="card">
+                        <i class="fas fa-credit-card"></i>
+                        <span>بطاقة ائتمان</span>
+                    </div>
+                    <div class="payment-method" data-method="cash">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>الدفع عند الاستلام</span>
+                    </div>
+                </div>
+                
+                <div class="payment-details" id="card-payment">
+                    <div id="card-element"></div>
+                    <div id="card-errors" role="alert"></div>
+                </div>
+                
+                <div class="payment-details" id="cash-payment" style="display: none;">
+                    <p>سيتم الدفع نقداً عند استلام الطلب. سيتم إضافة رسوم توصيل إضافية.</p>
+                </div>
+                
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>المجموع الفرعي</span>
+                        <span id="payment-subtotal">0 IQD</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>التوصيل</span>
+                        <span id="payment-shipping">5,000 IQD</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>المجموع الكلي</span>
+                        <span id="payment-total">5,000 IQD</span>
+                    </div>
+                </div>
+                
+                <div class="delivery-address">
+                    <h3>عنوان التوصيل</h3>
+                    <p id="delivery-address-text">لم يتم تحديد عنوان</p>
+                    <button class="btn-outline" id="change-address">
+                        <i class="fas fa-edit"></i>
+                        تغيير العنوان
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="confirm-payment">
+                    <span>تأكيد الدفع</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- نافذة سياسة الخصوصية -->
     <div class="modal" id="privacy-modal" style="display: none;">
         <div class="modal-content animate__animated animate__fadeInUp">
@@ -226,56 +408,7 @@
             </div>
             <div class="modal-body">
                 <div class="terms-content">
-                    <h3>1. المعلومات التي نجمعها</h3>
-                    <p>نقوم بجمع المعلومات التالية عندما تستخدم منصتنا:</p>
-                    <ul>
-                        <li>معلومات الحساب: الاسم، البريد الإلكتروني، رقم الهاتف، كلمة المرور</li>
-                        <li>معلومات الدفع: تفاصيل بطاقة الائتمان أو الحساب البنكي</li>
-                        <li>معلومات الطلب: المنتجات المشتراة، العنوان، تفاصيل الشحن</li>
-                        <li>معلومات الجهاز: نوع الجهاز، نظام التشغيل، عنوان IP</li>
-                    </ul>
-
-                    <h3>2. كيفية استخدام المعلومات</h3>
-                    <p>نستخدم المعلومات التي نجمعها للأغراض التالية:</p>
-                    <ul>
-                        <li>توفير الخدمات المطلوبة وتنفيذ الطلبات</li>
-                        <li>تحسين تجربة المستخدم وتطوير المنتجات</li>
-                        <li>إرسال التحديثات والعروض الترويجية</li>
-                        <li>تحليل استخدام الموقع وتحسين أدائه</li>
-                    </ul>
-
-                    <h3>3. مشاركة المعلومات</h3>
-                    <p>لا نبيع أو نؤجر معلوماتك الشخصية لأطراف ثالثة، إلا في الحالات التالية:</p>
-                    <ul>
-                        <li>مع مزودي الخدمة الذين يساعدوننا في تشغيل المنصة</li>
-                        <li>عندما يكون ذلك مطلوبًا بموجب القانون</li>
-                        <li>في حالة اندماج أو استحواذ على الشركة</li>
-                    </ul>
-
-                    <h3>4. حماية المعلومات</h3>
-                    <p>نستخدم إجراءات أمنية متقدمة لحماية معلوماتك، بما في ذلك:</p>
-                    <ul>
-                        <li>تشفير البيانات أثناء النقل والتخزين</li>
-                        <li>مراجعات أمنية منتظمة</li>
-                        <li>تقييد الوصول إلى المعلومات الحساسة</li>
-                    </ul>
-
-                    <h3>5. حقوقك</h3>
-                    <p>لديك الحق في:</p>
-                    <ul>
-                        <li>الوصول إلى معلوماتك الشخصية وتحديثها</li>
-                        <li>طلب حذف حسابك وبياناتك</li>
-                        <li>رفض تلقي اتصالات تسويقية</li>
-                        <li>سحب الموافقة على معالجة بياناتك</li>
-                    </ul>
-
-                    <h3>6. التغييرات على السياسة</h3>
-                    <p>قد نقوم بتحديث هذه السياسة من وقت لآخر. وسنخطرك بأي تغييرات جوهرية.</p>
-
-                    <h3>7. الاتصال بنا</h3>
-                    <p>إذا كانت لديك أي أسئلة حول سياسة الخصوصية، يمكنك الاتصال بنا عبر:</p>
-                    <p>البريد الإلكتروني: privacy@rahimli.com</p>
-                    <p>الهاتف: +9647001234567</p>
+                    <!-- محتوى سياسة الخصوصية -->
                 </div>
             </div>
             <div class="modal-footer">
@@ -296,53 +429,7 @@
             </div>
             <div class="modal-body">
                 <div class="terms-content">
-                    <h3>1. مقدمة</h3>
-                    <p>مرحبًا بك في منصة Rahimli. من خلال استخدامك لهذه المنصة، فإنك توافق على الالتزام بهذه الشروط والأحكام.</p>
-
-                    <h3>2. إنشاء الحساب</h3>
-                    <ul>
-                        <li>يجب أن تكون 18 عامًا على الأقل لإنشاء حساب</li>
-                        <li>أنت مسؤول عن الحفاظ على سرية معلومات تسجيل الدخول</li>
-                        <li>يجب تقديم معلومات دقيقة وكاملة</li>
-                    </ul>
-
-                    <h3>3. الطلبات والدفع</h3>
-                    <ul>
-                        <li>الأسعار المعروضة تشمل الضرائب إن وجدت</li>
-                        <li>نحن نحتفظ بالحق في رفض أو إلغاء أي طلب</li>
-                        <li>يجب تسديد المبلغ كاملاً قبل الشحن</li>
-                    </ul>
-
-                    <h3>4. الشحن والتسليم</h3>
-                    <ul>
-                        <li>أوقات التسليم تقديرية وليست مضمونة</li>
-                        <li>أنت مسؤول عن توفير عنوان تسليم دقيق</li>
-                        <li>قد تفرض رسوم شحن إضافية لبعض المناطق</li>
-                    </ul>
-
-                    <h3>5. الإرجاع والاسترداد</h3>
-                    <ul>
-                        <li>يجب إرجاع المنتجات في حالتها الأصلية</li>
-                        <li>يجب تقديم طلب الإرجاع خلال 7 أيام من الاستلام</li>
-                        <li>لا يتم استرداد رسوم الشحن الأصلية</li>
-                    </ul>
-
-                    <h3>6. الملكية الفكرية</h3>
-                    <p>جميع المحتويات على المنصة محمية بحقوق الملكية الفكرية ولا يجوز نسخها أو توزيعها دون إذن.</p>
-
-                    <h3>7. المسؤولية</h3>
-                    <p>لا نتحمل مسؤولية أي أضرار غير مباشرة ناتجة عن استخدام المنصة.</p>
-
-                    <h3>8. التعديلات</h3>
-                    <p>نحتفظ بالحق في تعديل هذه الشروط في أي وقت. وسيتم إعلامك بأي تغييرات جوهرية.</p>
-
-                    <h3>9. القانون الواجب التطبيق</h3>
-                    <p>تخضع هذه الشروط والأحكام لقوانين جمهورية العراق.</p>
-
-                    <h3>10. الاتصال بنا</h3>
-                    <p>لأية استفسارات حول الشروط والأحكام، يمكنك الاتصال بنا عبر:</p>
-                    <p>البريد الإلكتروني: legal@rahimli.com</p>
-                    <p>الهاتف: +9647001234567</p>
+                    <!-- محتوى الشروط والأحكام -->
                 </div>
             </div>
             <div class="modal-footer">
@@ -366,15 +453,15 @@
                     <h3><i class="fas fa-user-cog"></i> إعدادات الحساب</h3>
                     <div class="setting-item">
                         <label>تغيير الصورة الشخصية</label>
-                        <button class="btn-outline">تغيير</button>
+                        <button class="btn-outline" id="change-avatar">تغيير</button>
                     </div>
                     <div class="setting-item">
                         <label>تغيير كلمة المرور</label>
-                        <button class="btn-outline">تغيير</button>
+                        <button class="btn-outline" id="change-password">تغيير</button>
                     </div>
                     <div class="setting-item">
                         <label>تحديث المعلومات الشخصية</label>
-                        <button class="btn-outline">تحديث</button>
+                        <button class="btn-outline" id="update-info">تحديث</button>
                     </div>
                 </div>
 
@@ -383,21 +470,21 @@
                     <div class="setting-item">
                         <label>إشعارات الطلبات</label>
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" id="order-notifications" checked>
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="setting-item">
                         <label>عروض خاصة</label>
                         <label class="switch">
-                            <input type="checkbox" checked>
+                            <input type="checkbox" id="promo-notifications" checked>
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="setting-item">
                         <label>تحديثات المتجر</label>
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" id="store-notifications">
                             <span class="slider round"></span>
                         </label>
                     </div>
@@ -407,7 +494,7 @@
                     <h3><i class="fas fa-globe"></i> اللغة والمنطقة</h3>
                     <div class="setting-item">
                         <label>اللغة</label>
-                        <select>
+                        <select id="language-select">
                             <option value="ar" selected>العربية</option>
                             <option value="en">English</option>
                             <option value="ku">Kurdî</option>
@@ -415,7 +502,7 @@
                     </div>
                     <div class="setting-item">
                         <label>العملة</label>
-                        <select>
+                        <select id="currency-select">
                             <option value="IQD" selected>دينار عراقي (IQD)</option>
                             <option value="USD">دولار أمريكي (USD)</option>
                         </select>
@@ -427,20 +514,20 @@
                     <div class="setting-item">
                         <label>حساب خاص</label>
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" id="private-account">
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="setting-item">
                         <label>مصادقة ثنائية</label>
                         <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" id="two-factor-auth">
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="setting-item">
                         <label>نشاط تسجيل الدخول</label>
-                        <button class="btn-outline">عرض</button>
+                        <button class="btn-outline" id="view-activity">عرض</button>
                     </div>
                 </div>
             </div>
@@ -486,72 +573,17 @@
 
                 <div class="help-content">
                     <div class="help-questions" id="general-questions">
-                        <h3>أسئلة عامة</h3>
-                        <div class="help-question">
-                            <div class="question">كيف يمكنني التواصل مع خدمة العملاء؟</div>
-                            <div class="answer">
-                                يمكنك التواصل مع خدمة العملاء عبر:
-                                <ul>
-                                    <li>البريد الإلكتروني: support@rahimli.com</li>
-                                    <li>الهاتف: +9647001234567</li>
-                                    <li>الدردشة الحية في التطبيق</li>
-                                </ul>
-                                ساعات العمل: من السبت إلى الخميس، من 9 صباحًا حتى 5 مساءً.
-                            </div>
-                        </div>
-                        <div class="help-question">
-                            <div class="question">ما هي ساعات عمل المتاجر؟</div>
-                            <div class="answer">
-                                تختلف ساعات العمل حسب المتجر. يمكنك الاطلاع على ساعات العمل لكل متجر في صفحة المتجر. معظم المتاجر تعمل من الساعة 9 صباحًا حتى 10 مساءً.
-                            </div>
-                        </div>
-                        <div class="help-question">
-                            <div class="question">كيف يمكنني الإبلاغ عن مشكلة؟</div>
-                            <div class="answer">
-                                يمكنك الإبلاغ عن أي مشكلة عبر:
-                                <ol>
-                                    <li>الذهاب إلى صفحة "المساعدة" في التطبيق</li>
-                                    <li>اختيار "الإبلاغ عن مشكلة"</li>
-                                    <li>تعبئة النموذج وإرساله</li>
-                                </ol>
-                                سنقوم بالرد عليك خلال 24 ساعة عمل.
-                            </div>
-                        </div>
+                        <!-- أسئلة عامة -->
                     </div>
-
+                    
                     <div class="help-questions" id="account-questions" style="display: none;">
-                        <h3>أسئلة الحساب</h3>
-                        <div class="help-question">
-                            <div class="question">كيف يمكنني إنشاء حساب؟</div>
-                            <div class="answer">
-                                لإنشاء حساب جديد:
-                                <ol>
-                                    <li>اضغط على أيقونة "حسابي" في القائمة السفلية</li>
-                                    <li>اختر "إنشاء حساب جديد"</li>
-                                    <li>املأ المعلومات المطلوبة</li>
-                                    <li>اضغط على "إنشاء حساب"</li>
-                                </ol>
-                                ستتلقى رسالة تأكيد على بريدك الإلكتروني أو هاتفك.
-                            </div>
-                        </div>
-                        <div class="help-question">
-                            <div class="question">نسيت كلمة المرور، كيف استعيدها؟</div>
-                            <div class="answer">
-                                لاستعادة كلمة المرور:
-                                <ol>
-                                    <li>اضغط على "نسيت كلمة المرور" في صفحة تسجيل الدخول</li>
-                                    <li>أدخل بريدك الإلكتروني أو رقم هاتفك</li>
-                                    <li>اتبع التعليمات في الرسالة التي ستصل إليك</li>
-                                </ol>
-                                إذا لم تستلم الرسالة، تحقق من مجلد الرسائل غير المرغوب فيها.
-                            </div>
-                        </div>
+                        <!-- أسئلة الحساب -->
                     </div>
-
+                    
                     <div class="contact-support">
                         <h3>لم تجد إجابتك؟</h3>
                         <p>يمكنك التواصل مباشرة مع فريق الدعم</p>
-                        <button class="btn-primary">
+                        <button class="btn-primary" id="contact-support">
                             <i class="fas fa-headset"></i>
                             <span>الدردشة مع الدعم</span>
                         </button>
@@ -572,5 +604,7 @@
     <div class="ripple-effect"></div>
 
     <script src="js/app.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script src="js/payment.js" type="module"></script>
 </body>
 </html>
