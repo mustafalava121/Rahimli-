@@ -1,3 +1,5 @@
+/* style.css - ملف الأنماط الرئيسي لتطبيق Rahimli */
+
 :root {
     --primary-color: #1E3A8A;
     --primary-light: #3B82F6;
@@ -63,7 +65,7 @@ body {
     transition: background-color var(--transition-medium);
 }
 
-/* شاشة التحميل المحسنة */
+/* شاشة التحميل */
 .splash-screen {
     position: fixed;
     top: 0;
@@ -847,6 +849,12 @@ input:checked + .slider:before {
     width: 0;
     background-color: var(--danger-color);
     transition: all var(--transition-medium);
+}
+
+.strength-text {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    margin-top: 4px;
 }
 
 .form-footer {
