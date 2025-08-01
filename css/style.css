@@ -1074,8 +1074,8 @@ input:checked + .slider:before {
 }
 
 .slide img {
-    width: 70%;
-    height: 70%;
+    width: 70px;
+    height: 70px;
     object-fit: cover;
 }
 
