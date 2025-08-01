@@ -267,13 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <!-- شريط الإعلانات المتحرك -->
                 <div class="hero-slider">
                     <div class="slide active">
-                        <img src="assets/banners/banner1.jpg" alt="عروض خاصة" class="animate__animated animate__fadeIn">
+                        <img src="assets/banners/Picsart_25-08-01_04-16-41-887.jpg" alt="عروض خاصة" class="animate__animated animate__fadeIn">
                     </div>
                     <div class="slide">
-                        <img src="assets/banners/banner2.jpg" alt="خصومات كبيرة" class="animate__animated animate__fadeIn">
+                        <img src="assets/banners/Picsart_25-08-01_04-10-51-237.jpg" alt="خصومات كبيرة" class="animate__animated animate__fadeIn">
                     </div>
                     <div class="slide">
-                        <img src="assets/banners/banner3.jpg" alt="منتجات جديدة" class="animate__animated animate__fadeIn">
+                        <img src="assets/banners/Picsart_25-08-01_04-19-14-468.jpg" alt="منتجات جديدة" class="animate__animated animate__fadeIn">
                     </div>
                     <div class="slider-indicators">
                         <span class="active"></span>
