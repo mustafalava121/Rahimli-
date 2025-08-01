@@ -8,7 +8,7 @@ const ASSETS_TO_CACHE = [
   '/assets/logo.png',
   '/assets/user-avatar.jpg',
   '/assets/banners/Picsart_25-08-01_04-16-41-887.jpg',
-  '/assets/banners/banner2.jpg',
+  '/assets/banners/Picsart_25-08-01_04-10-51-237.jpg',
   '/assets/banners/banner3.jpg',
   '/assets/stores/electronics-store.jpg',
   '/assets/stores/clothing-store.jpg',
